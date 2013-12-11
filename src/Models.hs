@@ -3,8 +3,7 @@
 module Models where
 
 import qualified Data.ByteString.Char8 as BS
-import Data.Aeson ((.:), FromJSON(..), Value(..))
-import Control.Applicative ((<$>), (<*>))
+import Data.Aeson (FromJSON(..))
 import GHC.Generics (Generic)
 
 data CommitInfo = CommitInfo {

@@ -9,29 +9,7 @@ import Control.Applicative ((<$>), (<*>))
 import Data.Aeson ((.:), (.:?), decode, FromJSON(..), Value(..))
 import Data.Text (Text)
 
-
-data CommitInfo = CommitInfo {
-    message :: BS.ByteString
-    } deriving (Show)
-
-data Commit = Commit {
-    sha :: BS.ByteString,
-    url :: BS.ByteString,
-    commit :: CommitInfo
-    } deriving (Show)
-
-instance FromJSON Commit where
-    parseJSON (Object v) =
-        Commit         <$>
-        (v .: "sha")   <*>
-        (v .: "url")   <*>
-        (v .: "commit")
-
-instance FromJSON CommitInfo where
-    parseJSON (Object v) =
-        CommitInfo       <$>
-        (v .: "message")
-
+import Models
 
 main = do
   manager <- newManager def
@@ -45,16 +23,16 @@ main = do
     res <- http req' manager
     responseBody res $$+- CB.lines =$ counterSink
 
-printCommits :: [Commit] -> IO ()
+printCommits :: [Models.Commit] -> IO ()
 printCommits (x:xs) = do
-                    BS.putStrLn (url x)
-                    BS.putStrLn (message (commit x))
+                    BS.putStrLn (Models.url x)
+                    BS.putStrLn (Models.message (commit x))
                     printCommits xs
 printCommits [] = return ()
 
-{- parsing json from file may be like this -}
-{- file = BL.readFile "test.json" -}
-{- (decode <$> file) :: IO (Maybe [Commit]) -}
+-- parsing json from file may be like this 
+-- file = BL.readFile "test.json" 
+-- (decode <$> file) :: IO (Maybe [Commit])
 counterSink :: Sink BS.ByteString (ResourceT IO) ()
 counterSink = do
   md <- await
@@ -62,7 +40,7 @@ counterSink = do
     Nothing -> return ()
     Just d -> do
       liftIO $ BS.putStrLn "--------"
-      case (decode (BL.fromChunks [d]) :: Maybe [Commit]) of
+      case (decode (BL.fromChunks [d]) :: Maybe [Models.Commit]) of
         Nothing -> do
             liftIO $ BS.putStrLn "Parse error"
         Just commits -> do

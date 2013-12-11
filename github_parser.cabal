@@ -18,7 +18,7 @@ cabal-version:       >=1.10
 executable github_parser
   hs-source-dirs: src
   ghc-options: -O2 -Wall -fno-warn-missing-signatures
-  main-is: parser.hs
+  main-is: Parser.hs
   build-depends:
       base >= 4.5,
       mtl >= 2.1,

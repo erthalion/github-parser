@@ -6,12 +6,14 @@ import qualified Data.ByteString.Char8 as BS
 import qualified Data.ByteString.Lazy as BL
 import Control.Monad.Trans
 import Data.Aeson (decode)
+import System.Environment
 
 import Models
 
 main = do
+    (path:args) <- getArgs
     manager <- newManager def
-    req <- parseUrl "https://api.github.com/repos/erthalion/vimrc/commits"
+    req <- parseUrl path
     let headers = requestHeaders req
         req' = req {
           requestHeaders = ("User-agent", "some-app") :

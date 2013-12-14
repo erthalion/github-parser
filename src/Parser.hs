@@ -33,7 +33,7 @@ printCommits [] = return ()
 
 parseCommits :: BS.ByteString -> Sink BS.ByteString (ResourceT IO) ()
 parseCommits rawData = do
-        let parsedData = decode $ BL.fromChunks [rawData] :: Maybe [Models.Commit]
+        let parsedData = decode $ BL.fromStrict rawData
         case parsedData of
             Nothing -> liftIO $ BS.putStrLn "Parse error"
             Just commits -> liftIO $ printCommits commits
